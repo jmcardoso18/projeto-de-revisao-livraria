@@ -1,26 +1,39 @@
 package com.generation.livraria.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-@Entity//Indicando que essa classe é uma entidade
-@Table(name="tb_categorias")//Nome da tabela que essa classe ira gerar
+@Entity // Indicando que essa classe é uma entidade
+@Table(name = "tb_categorias") // Nome da tabela que essa classe ira gerar
 public class Categoria {
-	
-	@Id//Indica que esse campo é uma chave primaria
-	@GeneratedValue(strategy = GenerationType.IDENTITY)//Será um atributo auto incremental
+
+	@Id // Indica que esse campo é uma chave primaria
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Será um atributo auto incremental
 	private Long Id;
-	
-	@Column(length=100)//Podemos definir nessa anotação name,nullable(se aceita valor nulo),unique,insertable,updatable)
+
+	@Column(length = 100) // Podemos definir nessa anotação name,nullable(se aceita valor
+							// nulo),unique,insertable,updatable)
 	@NotBlank(message = "O Atributo descricao é obrigatório")
 	@Size(min = 3, max = 100, message = "A descricao deve ter entre 3 e 100 caracteres")
 	private String descricao;
+
+	// Relacionamento com a tabela Produto
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "categoria", cascade = CascadeType.REMOVE)
+	@JsonIgnoreProperties(value = "categoria", allowSetters = true)
+	private List<Produto> produto;
 
 	public Long getId() {
 		return Id;
@@ -37,5 +50,14 @@ public class Categoria {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
+
+	public List<Produto> getProduto() {
+		return produto;
+	}
+
+	public void setProduto(List<Produto> produto) {
+		this.produto = produto;
+	}
+	
 
 }
